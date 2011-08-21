@@ -1,0 +1,82 @@
+This is the Org Icons minor mode for Org Mode [1].
+
+I indend to win this year's Most Ridiculous Release Number Contest, so
+I set the current one to 0.271182363. Wish me luck: I seem to have some quite serious opponents... I dare you, Memoir ! [2].
+
+[1] http://orgmode.org
+[2] http://www.ctan.org/tex-archive/macros/latex/contrib/memoir/
+
+
+* Installation
+
+1. Apply org-icons.patch on the latest org-mode code:
+    cd path/to/org-mode
+    patch -p0 < path/to/org-icons/lisp/org-icons.patch
+
+   Or
+
+   Copy the patch "org-icons.patch" to the directory where you keep your "org.el"
+   cd to that directory
+   And then apply the patch like this:
+    patch -b org.el org-icons.patch
+
+    rm org.elc ; make ; sudo make install
+
+2. Add org-icons/lisp to your load-path:
+    (setq load-path (cons "/path/to/org-icons/lisp" load-path))
+
+3. Restart emacs
+   
+* Usage
+
+- You can turn on `org-icons-mode' on startup by setting the
+  org-startup-with-icons-mode variable to true,
+  
+    (setq org-startup-with-icons-mode t)
+
+- You can also enable or disable icon display on a per-buffer level, using
+
+    M-x org-icons-mode
+
+- A key sequence can easily be used for this, like =C-c i= in this example:
+
+    (add-hook 'org-mode-hook 
+      (lambda () (local-set-key "\C-ci" 'org-icons-mode)))
+
+* Configuration
+
+Conceivably the Org Mode community will agree on how Org icons theme should be defined, if they make sense. Org Mode's philosophy is to be as generic as possible and it's not clear to me how to capture what most people need while keeping in balance with flexibility.
+
+Meanwhile, the set of icons that can be used, `org-icons-set', is a little bit hardwired into the code.
+
+More flexible are the functions governing which icon to draw, namely `org-todo-state-icon-at', `org-priority-icon-at', `org-drawer-icon-at' and `org-special-keyword-icon-at'. Looking at the source code should be enough for you to redefine these functions to suit your needs. For instance, you'll most probably want to write in your configuration
+
+  (defun org-todo-state-icon-at (state priority tags)
+    (cond
+      ...
+    )
+  )
+
+and instead of the dots, a set of (condition icon-name) like
+
+  ((member "SOMEDAY"  tags ) "state-someday")
+
+or more complex, like
+
+  ((equal  "NEXT"     state) 
+     (if (>= priority 2000) "state-next-important" "state-next"))
+
+* Bugs and limitations
+
+- Documentation is missing.
+- No themes yet: see the introduction.
+- When cycling from a TODO keyword to no keyword using S-right, the
+  latest icon remains displayed.
+- When loading an org buffer, font-lock-fontify-buffer is called twice
+  if org-startup-with-icons-mode is set to t.
+- The standard icon set isn't visually consistent enough
+
+* Please consider...
+
+- the code is still beta;
+- any suggestion / contribution warmly welcome.
